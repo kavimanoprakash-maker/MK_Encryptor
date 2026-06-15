@@ -16,6 +16,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Fix build.gradle
+        run: |
+          cat > build.gradle << 'GRADLE'
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.1.0'
+              }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          GRADLE
+
       - name: Build APK
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip
@@ -24,7 +44,7 @@ jobs:
           gradle assembleDebug --no-daemon
 
       - name: Find APK
-        run: find . -name "*.apk" 2>/dev/null || echo "No APK found"
+        run: find . -name "*.apk" || echo "No APK"
 
       - uses: actions/upload-artifact@v4
         with:
