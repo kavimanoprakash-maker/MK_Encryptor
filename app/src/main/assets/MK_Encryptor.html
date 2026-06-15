@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>MK Encryptor – MK Education Centre</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg: #0d0a1a;
+  --panel: #120f22;
+  --panel2: #160d28;
+  --border: #2a1e45;
+  --accent: #c084fc;
+  --accent2: #f472b6;
+  --text: #e2d9f3;
+  --muted: #5a4a7a;
+  --success: #4ade80;
+  --error: #f87171;
+  --warn: #fbbf24;
+  --glow: 0 0 24px rgba(192,132,252,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'Rajdhani', 'Noto Sans Tamil', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(192,132,252,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,132,252,0.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; top: -150px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 350px;
+  background: radial-gradient(ellipse, rgba(192,132,252,0.08) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ══ LOGIN SCREEN ══ */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.login-box {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px 40px;
+  width: 100%; max-width: 420px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.6), var(--glow);
+}
+.login-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #7c3aed, var(--accent), var(--accent2));
+}
+
+.login-logo { text-align: center; margin-bottom: 32px; }
+.login-logo-icon {
+  width: 64px; height: 64px; margin: 0 auto 12px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent));
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; box-shadow: var(--glow);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 20px rgba(192,132,252,0.3); }
+  50%      { box-shadow: 0 0 50px rgba(192,132,252,0.7); }
+}
+.login-brand { font-size: 24px; font-weight: 700; color: var(--accent); letter-spacing: 3px; }
+.login-sub   { font-size: 11px; color: var(--muted); letter-spacing: 4px; font-family: 'Share Tech Mono', monospace; margin-top: 4px; }
+.login-tag   {
+  display: inline-block; margin-top: 10px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent2));
+  color: #fff; font-size: 10px; letter-spacing: 3px;
+  padding: 3px 14px; border-radius: 20px; font-weight: 600;
+}
+.login-title {
+  font-size: 13px; color: var(--muted); letter-spacing: 3px;
+  text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
+  text-align: center; margin-bottom: 28px;
+}
+
+.field-group { margin-bottom: 18px; }
+.field-label {
+  font-size: 11px; color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 8px; display: block;
+}
+.field-wrap { position: relative; }
+.field-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 15px; pointer-events: none;
+}
+.field-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 13px 46px 13px 42px; color: var(--text);
+  font-size: 15px; font-family: 'Rajdhani', 'Noto Sans Tamil', sans-serif;
+  font-weight: 600; outline: none; transition: all 0.3s;
+}
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,132,252,0.15); }
+.field-input::placeholder { color: var(--muted); font-weight: 400; }
+
+.pw-eye {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s;
+}
+.pw-eye:hover { color: var(--accent); }
+
+.btn-login {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent));
+  border: none; border-radius: 10px; color: white;
+  font-size: 17px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; transition: all 0.3s;
+}
+.btn-login:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(192,132,252,0.4); }
+.btn-login:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.login-error {
+  display: none; margin-top: 14px;
+  background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 8px; padding: 12px 14px; color: var(--error);
+  font-size: 13px; font-family: 'Share Tech Mono', monospace;
+  text-align: center; line-height: 1.6;
+}
+.welcome-badge {
+  display: none; margin-top: 14px;
+  background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 8px; padding: 12px 14px; color: var(--success);
+  font-size: 14px; font-family: 'Share Tech Mono', monospace; text-align: center;
+}
+.login-footer {
+  text-align: center; margin-top: 24px; font-size: 11px;
+  color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 2px;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(5px); }
+}
+
+/* ══ MAIN APP ══ */
+#mainApp { display: none; }
+#mainApp.show { display: block; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,10,26,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; flex-wrap: nowrap;
+}
+.topbar-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.topbar-brand { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
+.topbar-sub   { font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+@media (max-width: 480px) {
+  .topbar-sub { display: none; }
+  .topbar-brand { font-size: 13px; letter-spacing: 1px; }
+}
+
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(192,132,252,0.1); border: 1px solid rgba(192,132,252,0.2);
+  border-radius: 20px; padding: 5px 14px;
+}
+.user-avatar {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent2));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
+}
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+
+.btn-logout {
+  background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25);
+  color: var(--error); padding: 6px 14px; border-radius: 8px;
+  cursor: pointer; font-size: 12px; font-family: 'Rajdhani', sans-serif;
+  font-weight: 600; transition: all 0.2s;
+}
+.btn-logout:hover { background: rgba(248,113,113,0.22); }
+
+.container {
+  position: relative; z-index: 1;
+  max-width: 720px; margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; margin-bottom: 22px;
+  position: relative; overflow: hidden;
+  animation: fadeUp 0.5s ease both;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.card-title {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent); font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+}
+.step-badge {
+  background: var(--accent); color: #000;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ══ HTML INPUT AREA ══ */
+.html-textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; color: var(--text);
+  font-size: 13px; font-family: 'Share Tech Mono', monospace;
+  outline: none; transition: all 0.3s;
+  resize: vertical; min-height: 160px;
+  line-height: 1.5;
+}
+.html-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,132,252,0.15); }
+.html-textarea::placeholder { color: var(--muted); }
+
+/* ══ UPLOAD ZONE ══ */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 12px;
+  padding: 36px 20px; text-align: center; cursor: pointer;
+  transition: all 0.3s; background: rgba(192,132,252,0.02);
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: rgba(192,132,252,0.06); }
+.upload-zone.has-file { border-color: var(--success); background: rgba(74,222,128,0.04); }
+.upload-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-text { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.upload-sub  { font-size: 12px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+
+/* ══ TEXT INPUT (doc name, expiry) ══ */
+.text-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 13px 16px; color: var(--text);
+  font-size: 15px; font-family: 'Rajdhani', 'Noto Sans Tamil', sans-serif;
+  font-weight: 600; outline: none; transition: all 0.3s;
+}
+.text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,132,252,0.15); }
+.text-input::placeholder { color: var(--muted); font-weight: 400; }
+
+/* ══ INPUT LABEL ══ */
+.input-label {
+  font-size: 11px; color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 8px; display: block;
+}
+.input-group { margin-bottom: 16px; }
+
+/* ══ ENCRYPT BUTTON ══ */
+.btn-encrypt {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent));
+  border: none; border-radius: 12px; color: white;
+  font-size: 17px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; transition: all 0.3s;
+}
+.btn-encrypt:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(192,132,252,0.4); }
+.btn-encrypt:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ══ PROGRESS ══ */
+.progress-wrap { display: none; margin-top: 18px; }
+.progress-label { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--accent); margin-bottom: 8px; letter-spacing: 2px; }
+.progress-bar   { height: 5px; background: var(--border); border-radius: 5px; overflow: hidden; }
+.progress-fill  { height: 100%; background: linear-gradient(90deg, #7c3aed, var(--accent)); border-radius: 5px; width: 0%; transition: width 0.4s; }
+
+/* ══ MESSAGES ══ */
+.error-msg {
+  display: none; margin-top: 12px;
+  background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 8px; padding: 11px 14px; color: var(--error);
+  font-size: 13px; font-family: 'Share Tech Mono', monospace; line-height: 1.6;
+}
+.success-msg {
+  display: none; margin-top: 12px;
+  background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 8px; padding: 14px; color: var(--success);
+  font-size: 13px; font-family: 'Share Tech Mono', monospace; line-height: 1.7;
+}
+
+/* ══ DOWNLOAD BUTTON ══ */
+.btn-download {
+  display: none; width: 100%; margin-top: 14px; padding: 14px;
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+  border: none; border-radius: 12px; color: #000;
+  font-size: 16px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; transition: all 0.3s;
+}
+.btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(74,222,128,0.4); }
+
+/* ══ INFO BADGE ══ */
+.info-badge {
+  background: rgba(192,132,252,0.06); border: 1px solid rgba(192,132,252,0.15);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;
+  font-size: 13px; color: var(--muted); font-family: 'Share Tech Mono', monospace;
+  line-height: 1.7;
+}
+.info-badge strong { color: var(--accent); }
+
+/* ══ DIVIDER ══ */
+.or-divider {
+  display: flex; align-items: center; gap: 12px; margin: 16px 0;
+  font-size: 11px; color: var(--muted); font-family: 'Share Tech Mono', monospace;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ══ HISTORY CARD ══ */
+.history-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px 24px; margin-bottom: 22px;
+  position: relative; overflow: hidden; animation: fadeUp 0.5s ease both;
+  animation-delay: 0.2s;
+}
+.history-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent2), transparent);
+}
+.history-empty {
+  text-align: center; color: var(--muted);
+  font-family: 'Share Tech Mono', monospace; font-size: 12px;
+  padding: 16px 0; letter-spacing: 1px;
+}
+.history-list { list-style: none; }
+.history-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.history-item:last-child { border-bottom: none; }
+.history-num { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--muted); min-width: 20px; text-align: right; }
+.history-icon { font-size: 16px; flex-shrink: 0; }
+.history-info { flex: 1; min-width: 0; }
+.history-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-time { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+.btn-clear-history {
+  background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+  color: var(--error); padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; font-size: 11px; font-family: 'Share Tech Mono', monospace;
+  transition: all 0.2s; margin-left: auto;
+}
+.btn-clear-history:hover { background: rgba(248,113,113,0.18); }
+
+/* ══ HOWTO ══ */
+.howto { background: rgba(192,132,252,0.04); border: 1px solid rgba(192,132,252,0.12); border-radius: 10px; padding: 16px 18px; }
+.howto-steps { list-style: none; }
+.howto-steps li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.5; }
+.howto-steps li:last-child { border-bottom: none; }
+.step-num { background: var(--accent); color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.footer { text-align: center; margin-top: 40px; font-size: 15px; color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; }
+.footer span { color: var(--accent2); }
+
+/* ══ ANIMATIONS ══ */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.card:nth-child(2) { animation-delay: 0.08s; }
+.card:nth-child(3) { animation-delay: 0.16s; }
+.card:nth-child(4) { animation-delay: 0.24s; }
+
+/* ══ SPLASH ══ */
+#splashScreen {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: var(--bg); align-items: center; justify-content: center;
+  flex-direction: column; gap: 24px;
+}
+#splashScreen.show { display: flex; }
+.splash-logo-icon {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, #7c3aed, var(--accent));
+  border-radius: 20px; display: flex; align-items: center; justify-content: center;
+  font-size: 38px; animation: splashPulse 1.2s ease-in-out infinite;
+}
+@keyframes splashPulse {
+  0%,100% { box-shadow: 0 0 30px rgba(192,132,252,0.4); transform: scale(1); }
+  50%      { box-shadow: 0 0 70px rgba(192,132,252,0.8); transform: scale(1.07); }
+}
+.splash-brand { font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: 4px; }
+.splash-msg   { font-size: 13px; color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 3px; }
+.splash-user  {
+  background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 30px; padding: 8px 22px; color: var(--success);
+  font-size: 14px; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px;
+}
+.splash-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(192,132,252,0.2); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══ TAB SWITCHER ══ */
+.tab-group {
+  display: flex; gap: 8px; margin-bottom: 18px;
+}
+.tab-btn {
+  flex: 1; padding: 10px 8px;
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--muted);
+  font-size: 12px; font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px; cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.tab-btn.active {
+  background: rgba(192,132,252,0.15); border-color: var(--accent);
+  color: var(--accent);
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ══ PASSWORD MODE TOGGLE ══ */
+.pw-mode-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 7px 10px; margin-bottom: 14px;
+}
+.pw-mode-label {
+  font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px; white-space: nowrap; flex-shrink: 0;
+}
+.pw-mode-toggle {
+  display: flex; flex: 1; background: rgba(0,0,0,0.4);
+  border-radius: 7px; padding: 2px; gap: 2px;
+}
+.pw-mode-btn {
+  flex: 1; padding: 6px 4px; border: none; border-radius: 5px;
+  font-size: 11px; font-weight: 700; font-family: 'Rajdhani', sans-serif;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+}
+.pw-mode-btn.active {
+  background: linear-gradient(135deg, #7c3aed, var(--accent));
+  color: white; box-shadow: 0 2px 8px rgba(192,132,252,0.3);
+}
+.pw-mode-btn:not(.active) { background: transparent; color: var(--muted); }
+.manual-pw-wrap {
+  display: none; margin-bottom: 12px; position: relative; animation: fadeIn 0.2s ease;
+}
+.manual-pw-wrap.show { display: block; }
+.manual-pw-input {
+  width: 100%; background: rgba(192,132,252,0.05);
+  border: 1.5px solid rgba(192,132,252,0.4); border-radius: 9px;
+  padding: 12px 46px 12px 14px; color: var(--text);
+  font-size: 14px; font-family: 'Share Tech Mono', monospace;
+  outline: none; transition: all 0.3s;
+}
+.manual-pw-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,132,252,0.15); }
+.manual-pw-input::placeholder { color: var(--muted); font-size: 12px; }
+.manual-pw-eye-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s;
+}
+.manual-pw-eye-btn:hover { color: var(--accent); }
+.pw-auto-hint {
+  font-size: 10px; color: var(--success); font-family: 'Share Tech Mono', monospace;
+  text-align: center; padding: 4px 0 8px; opacity: 0.8;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+</style>
+</head>
+<body>
+
+<!-- ════ SPLASH ════ -->
+<div id="splashScreen">
+  <div class="splash-logo-icon">🔐</div>
+  <div class="splash-brand">MK ENCRYPTOR</div>
+  <div class="splash-user" id="splashUser">வரவேற்கிறோம்!</div>
+  <div class="splash-msg">Auto-login in progress</div>
+  <div class="splash-spinner"></div>
+</div>
+
+<!-- ════ LOGIN SCREEN ════ -->
+<div id="loginScreen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">🔐</div>
+      <div class="login-brand">MK ENCRYPTOR</div>
+      <div class="login-sub">MK Education Centre</div>
+      <div class="login-tag">ஆசிரியர் உள்நுழைவு · Teacher Login</div>
+    </div>
+
+    <div class="login-title">உங்கள் விவரங்களை உள்ளிடுங்கள்</div>
+
+    <div class="field-group">
+      <label class="field-label">👤 Username · பயனர் பெயர்</label>
+      <div class="field-wrap">
+        <span class="field-icon">👤</span>
+        <input type="text" class="field-input" id="loginUser"
+               placeholder="உங்கள் username..."
+               autocomplete="username" autocapitalize="none" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">🔑 Password · கடவுச்சொல்</label>
+      <div class="field-wrap">
+        <span class="field-icon">🔑</span>
+        <input type="password" class="field-input" id="loginPass"
+               placeholder="உங்கள் password..."
+               autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="pw-eye" onclick="toggleLoginPw()">👁</button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      🔓 &nbsp; உள்நுழை &nbsp;·&nbsp; LOGIN
+    </button>
+
+    <div class="login-error" id="loginError"></div>
+    <div class="welcome-badge" id="welcomeBadge"></div>
+    <div class="login-footer">MK Education Centre · Teacher Portal</div>
+  </div>
+</div>
+
+<!-- ════ MAIN APP ════ -->
+<div id="mainApp">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span style="font-size:20px">🔐</span>
+      <div>
+        <div class="topbar-brand">MK Encryptor</div>
+        <div class="topbar-sub">MK Education Centre</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div class="user-chip">
+        <div class="user-avatar" id="avatarInitial">T</div>
+        <div>
+          <div class="user-name" id="displayName">—</div>
+          <div class="user-role" id="displayRole">Teacher</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- STEP 1: HTML Source -->
+    <div class="card">
+      <div class="card-title"><div class="step-badge">1</div> பாட HTML உள்ளிடுங்கள் / Enter Lesson HTML</div>
+
+
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="switchTab('paste')">📋 HTML Paste செய்யுங்கள்</button>
+        <button class="tab-btn" onclick="switchTab('upload')">📁 HTML File Upload</button>
+      </div>
+
+      <div class="tab-pane active" id="tab-paste">
+        <textarea class="html-textarea" id="htmlInput"
+                  placeholder="இங்கே பாட HTML code-ஐ paste செய்யுங்கள்...&#10;&#10;உதாரணம்:&#10;&lt;!DOCTYPE html&gt;&#10;&lt;html&gt;...&lt;/html&gt;"></textarea>
+        <div style="text-align:right; margin-top:6px; font-size:11px; color:var(--muted); font-family:'Share Tech Mono',monospace;" id="charCount">0 characters</div>
+      </div>
+
+      <div class="tab-pane" id="tab-upload">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('htmlFileInput').click()">
+          <div class="upload-icon">📄</div>
+          <div class="upload-text">.html கோப்பை தேர்வு செய்யுங்கள்</div>
+          <div class="upload-sub">அல்லது இங்கே drag &amp; drop செய்யுங்கள்</div>
+        </div>
+        <input type="file" id="htmlFileInput" accept=".html,.htm" style="display:none">
+      </div>
+    </div>
+
+    <!-- STEP 2: Metadata -->
+    <div class="card">
+      <div class="card-title"><div class="step-badge">2</div> கோப்பு விவரங்கள் / File Details</div>
+
+      <div class="input-group">
+        <label class="input-label">📝 பாட பெயர் · Lesson Name</label>
+        <input type="text" class="text-input" id="docName"
+               placeholder="உதா: Grade 8 - Nouns Lesson 1">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">📅 காலக்கெடு · Expiry Date (விரும்பினால்)</label>
+        <input type="date" class="text-input" id="expiryDate"
+               style="color-scheme: dark;">
+        <div style="font-size:11px; color:var(--muted); font-family:'Share Tech Mono',monospace; margin-top:6px;">
+          ⚠️ காலியாக விட்டால் காலக்கெடு இல்லை / Leave empty for no expiry
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">🏷️ வகுப்பு / Class (விரும்பினால்)</label>
+        <input type="text" class="text-input" id="classInfo"
+               placeholder="உதா: 8 TH STD, NMMS Batch 2025">
+      </div>
+    </div>
+
+    <!-- STEP 3: Encrypt -->
+    <div class="card">
+      <div class="card-title"><div class="step-badge">3</div> கோப்பை குறியாக்கவும் / Encrypt File</div>
+
+      <!-- Password Mode Bar -->
+      <div class="pw-mode-bar">
+        <span class="pw-mode-label">🔑 கடவுச்சொல் முறை:</span>
+        <div class="pw-mode-toggle">
+          <button class="pw-mode-btn active" id="encBtnAuto" onclick="setEncKeyMode('auto')">⚡ AUTO</button>
+          <button class="pw-mode-btn" id="encBtnManual" onclick="setEncKeyMode('manual')">✏️ MANUAL</button>
+        </div>
+      </div>
+      <!-- Manual Password Input -->
+      <div class="manual-pw-wrap" id="encManualPwWrap">
+        <input type="password" id="encManualPwInput" class="manual-pw-input"
+               placeholder="🔑 .mkenc கோப்பிற்கான custom password இங்கே உள்ளிடுங்கள்..."
+               oninput="onEncManualPwInput()">
+        <button class="manual-pw-eye-btn" id="encManualPwEye" onclick="toggleEncManualPwEye()">👁</button>
+      </div>
+      <div class="pw-auto-hint" id="encAutoHint">
+        <span>⚡</span><span>தானியங்கி password பயன்படுத்தப்படுகிறது (Decryptor-உடன் sync)</span>
+      </div>
+
+      <button class="btn-encrypt" id="encBtn" onclick="startEncrypt()">
+        🔐 &nbsp; கோப்பை குறியாக்கு &nbsp;·&nbsp; ENCRYPT
+      </button>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-label" id="progressLabel">ENCRYPTING...</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="success-msg" id="successMsg"></div>
+
+      <button class="btn-download" id="downloadBtn" onclick="downloadFile()">
+        ⬇️ &nbsp; .mkenc கோப்பை பதிவிறக்கு &nbsp;·&nbsp; DOWNLOAD
+      </button>
+
+      <!-- Android மட்டும் தெரியும் Share Button -->
+      <button class="btn-download" id="shareBtn"
+              onclick="shareEncryptedFile()"
+              style="display:none; margin-top:10px;
+                     background:linear-gradient(135deg,#7c3aed,#c084fc);">
+        📤 &nbsp; கோப்பை பகிர் &nbsp;·&nbsp; SHARE FILE
+      </button>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-card">
+      <div class="card-title" style="justify-content:space-between;">
+        <span>🕓 &nbsp;குறியாக்கிய கோப்புகள் · Encrypted History</span>
+        <button class="btn-clear-history" onclick="clearHistory()">🗑 Clear</button>
+      </div>
+      <div id="historyBody">
+        <div class="history-empty">இன்னும் எந்த கோப்பும் குறியாக்கப்படவில்லை / No files encrypted yet</div>
+      </div>
+    </div>
+
+    <!-- HOW TO USE -->
+    <div class="card">
+      <div class="card-title">📖 எப்படி பயன்படுத்துவது?</div>
+      <div class="howto">
+        <ul class="howto-steps">
+          <li><div class="step-num">1</div><div>பாட HTML code-ஐ paste செய்யுங்கள் அல்லது .html கோப்பை upload செய்யுங்கள்</div></li>
+          <li><div class="step-num">2</div><div>பாட பெயர், காலக்கெடு (விரும்பினால்) உள்ளிடுங்கள்</div></li>
+          <li><div class="step-num">3</div><div>"கோப்பை குறியாக்கு" பொத்தானை அழுத்துங்கள் — <strong>.mkenc</strong> கோப்பு தயாராகும்</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">&nbsp;&nbsp;MK Education Centre&nbsp;&nbsp;<br><span>&nbsp;&nbsp;ஆசிரியர் கற்பித்தல் தளம்</span>&nbsp;&nbsp;<br><br>Designed by MK Team | All rights reserved</div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  TEACHER DATABASE — SHA-256 hashes only (no plain passwords)
+//  Hash formula: sha256('USERNAME|password|MK_SALT_2025')
+// ══════════════════════════════════════════════════════════════
+const TEACHERS = [
+  { user: 'MK TEACHER', hash: '6517d6b232de7933176640aeb2e7000907485f89d2120345336bfabbb3bc4773' },
+];
+
+const SALT        = 'MK_SALT_2025';
+const STORAGE_KEY = 'mk_enc_session';
+const HISTORY_KEY = 'mk_enc_history';
+
+// ══════════════════════════════════════════════════════════════
+//  🔐 MASTER KEY SYSTEM — Encryptor & Decryptor sync
+//
+//  MASTER_HASH = Decryptor-ல் உள்ள MKEC user-யின் login hash.
+//  இரண்டு tools-லும் இதே hash & domain string பயன்படுகிறது,
+//  எனவே encrypt செய்த கோப்பை எந்த மாணவரும் திறக்கலாம்.
+//
+//  புது மாணவர் சேர்த்தாலும் — file key மாறாது ✅
+// ══════════════════════════════════════════════════════════════
+const MASTER_HASH     = '3c25371aa9bd181497221d1a5483d3e4f177d5c198b7b63c90b156573aaab09f';
+const FILE_KEY_DOMAIN = 'MK_FILE_KEY_DOMAIN_2025';
+
+async function deriveFileKey() {
+  // MASTER_HASH + domain கொண்டு auto key derive — source code-ல் plain key இல்லை
+  const derived = await sha256(MASTER_HASH + '|' + FILE_KEY_DOMAIN);
+  return derived.substring(0, 16);
+}
+
+// ════ Password Mode Management ════
+const ENC_KEY_MODE_KEY   = 'mk_enc_filekey_mode';
+const ENC_KEY_MANUAL_KEY = 'mk_enc_filekey_manual';
+
+function getEncKeyMode()   { return localStorage.getItem(ENC_KEY_MODE_KEY)   || 'auto'; }
+function getEncManualKey() { return localStorage.getItem(ENC_KEY_MANUAL_KEY) || ''; }
+
+function setEncKeyMode(mode) {
+  localStorage.setItem(ENC_KEY_MODE_KEY, mode);
+  updateEncKeyUI(mode);
+  if (mode === 'auto') {
+    deriveFileKey().then(k => { currentFileKey = k; });
+  } else {
+    currentFileKey = getEncManualKey();
+  }
+}
+
+function updateEncKeyUI(mode) {
+  const btnAuto   = document.getElementById('encBtnAuto');
+  const btnManual = document.getElementById('encBtnManual');
+  const manualWrap = document.getElementById('encManualPwWrap');
+  const autoHint   = document.getElementById('encAutoHint');
+  if (!btnAuto) return;
+  if (mode === 'auto') {
+    btnAuto.classList.add('active');   btnManual.classList.remove('active');
+    if (manualWrap) manualWrap.classList.remove('show');
+    if (autoHint)   autoHint.style.display = 'flex';
+  } else {
+    btnManual.classList.add('active'); btnAuto.classList.remove('active');
+    if (manualWrap) manualWrap.classList.add('show');
+    if (autoHint)   autoHint.style.display = 'none';
+  }
+}
+
+function onEncManualPwInput() {
+  const val = document.getElementById('encManualPwInput').value;
+  localStorage.setItem(ENC_KEY_MANUAL_KEY, val);
+  if (getEncKeyMode() === 'manual') currentFileKey = val;
+}
+
+function toggleEncManualPwEye() {
+  const inp = document.getElementById('encManualPwInput');
+  const eye = document.getElementById('encManualPwEye');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  eye.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function verifyLogin(username, password) {
+  const h = await sha256(username + '|' + password + '|' + SALT);
+  return TEACHERS.find(t => t.user.toLowerCase() === username.toLowerCase() && t.hash === h) || null;
+}
+
+// ── Session ──
+async function makeToken(t) { return await sha256(t.user + '|' + t.hash + '|MK_ENC_TOKEN'); }
+async function saveSession(t) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ username: t.user, token: await makeToken(t) }));
+}
+function clearSession() { localStorage.removeItem(STORAGE_KEY); }
+function getSavedSession() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (d?.username && d?.token) return d;
+  } catch(e) {}
+  return null;
+}
+
+async function attemptAutoLogin() {
+  const saved = getSavedSession();
+  if (!saved) return false;
+  const splash = document.getElementById('splashScreen');
+  document.getElementById('splashUser').textContent = '👤 ' + saved.username;
+  splash.classList.add('show');
+  let found = null;
+  for (const t of TEACHERS) {
+    const tk = await makeToken(t);
+    if (t.user === saved.username && tk === saved.token) { found = t; break; }
+  }
+  await sleep(1200);
+  splash.classList.remove('show');
+  if (found) { currentTeacher = found; await renderMainApp(found); return true; }
+  clearSession(); return false;
+}
+
+// ── Login UI ──
+let currentTeacher = null;
+
+async function doLogin() {
+  const uEl = document.getElementById('loginUser');
+  const pEl = document.getElementById('loginPass');
+  const user = uEl.value.trim();
+  const pass = pEl.value;
+  document.getElementById('loginError').style.display = 'none';
+  if (!user) { showLoginErr('⚠️ Username உள்ளிடுங்கள்!'); uEl.focus(); return; }
+  if (!pass) { showLoginErr('⚠️ Password உள்ளிடுங்கள்!'); pEl.focus(); return; }
+  document.getElementById('loginBtn').disabled = true;
+  const found = await verifyLogin(user, pass);
+  document.getElementById('loginBtn').disabled = false;
+  if (found) {
+    currentTeacher = found;
+    await saveSession(found);
+    const wb = document.getElementById('welcomeBadge');
+    wb.textContent = `✅ வரவேற்கிறோம், ${found.user}!`;
+    wb.style.display = 'block';
+    setTimeout(async () => { await renderMainApp(found); }, 700);
+  } else {
+    showLoginErr('⚠️ தவறான Username அல்லது Password!');
+    pEl.value = ''; pEl.focus();
+  }
+}
+
+function doLogout() {
+  if (!confirm('வெளியேறவா? / Logout?')) return;
+  // Reset to auto mode on logout for safety
+  localStorage.setItem(ENC_KEY_MODE_KEY, 'auto');
+  clearSession(); location.reload();
+}
+
+async function renderMainApp(teacher) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('avatarInitial').textContent = teacher.user.charAt(0).toUpperCase();
+  document.getElementById('displayName').textContent   = teacher.user;
+  document.getElementById('displayRole').textContent   = 'Teacher';
+  document.getElementById('mainApp').classList.add('show');
+
+  // 🔐 Load correct file key based on saved mode
+  const mode = getEncKeyMode();
+  if (mode === 'manual') {
+    currentFileKey = getEncManualKey();
+    // Restore saved manual password into input
+    const manualInp = document.getElementById('encManualPwInput');
+    if (manualInp && currentFileKey) manualInp.value = currentFileKey;
+  } else {
+    currentFileKey = await deriveFileKey();
+  }
+  updateEncKeyUI(mode);
+  renderHistory();
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.style.display = 'block';
+  el.style.animation = 'none'; void el.offsetWidth;
+  el.style.animation = 'shake 0.4s ease';
+}
+function toggleLoginPw() {
+  const inp = document.getElementById('loginPass');
+  const btn = document.querySelector('.pw-eye');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  TAB SWITCHER
+// ══════════════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0 && tab==='paste') || (i===1 && tab==='upload')));
+  document.getElementById('tab-paste').classList.toggle('active', tab === 'paste');
+  document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+}
+
+// ── HTML file upload ──
+const htmlFileInput = document.getElementById('htmlFileInput');
+const uploadZone    = document.getElementById('uploadZone');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) loadHtmlFile(e.dataTransfer.files[0]);
+});
+htmlFileInput.addEventListener('change', () => { if (htmlFileInput.files[0]) loadHtmlFile(htmlFileInput.files[0]); });
+
+function loadHtmlFile(f) {
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('htmlInput').value = e.target.result;
+    updateCharCount();
+    uploadZone.classList.add('has-file');
+    uploadZone.querySelector('.upload-icon').textContent = '✅';
+    uploadZone.querySelector('.upload-text').textContent = f.name;
+    uploadZone.querySelector('.upload-sub').textContent  = 'தயார் · ' + fmtSize(f.size);
+    // Auto fill doc name from filename
+    if (!document.getElementById('docName').value)
+      document.getElementById('docName').value = f.name.replace(/\.html?$/i, '');
+    switchTab('paste');
+  };
+  r.readAsText(f, 'UTF-8');
+}
+
+// ── Char counter ──
+document.getElementById('htmlInput').addEventListener('input', updateCharCount);
+function updateCharCount() {
+  const n = document.getElementById('htmlInput').value.length;
+  document.getElementById('charCount').textContent = n.toLocaleString() + ' characters';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ENCRYPTION LOGIC  — AES-256-GCM + PBKDF2
+//  Format: MKEC (4 bytes) + version (1 byte) + salt (32) + iv (12) + ciphertext
+// ══════════════════════════════════════════════════════════════
+let encryptedBlob = null;
+let encryptedName = '';
+let currentFileKey = ''; // login-ல் derive ஆகும் — source code-ல் இல்லை
+
+async function deriveKey(pw, salt) {
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:310000, hash:'SHA-256' },
+    km, { name:'AES-GCM', length:256 }, false, ['encrypt']
+  );
+}
+
+async function aesEncrypt(plainText, pw) {
+  const salt  = crypto.getRandomValues(new Uint8Array(32));
+  const iv    = crypto.getRandomValues(new Uint8Array(12));
+  const key   = await deriveKey(pw, salt);
+  const cipher = await crypto.subtle.encrypt(
+    { name:'AES-GCM', iv },
+    key,
+    new TextEncoder().encode(plainText)
+  );
+  // Assemble: header(4) + version(1) + salt(32) + iv(12) + cipher
+  const header  = new Uint8Array([0x4D,0x4B,0x45,0x43]); // MKEC
+  const version = new Uint8Array([0x01]);
+  const out = new Uint8Array(4 + 1 + 32 + 12 + cipher.byteLength);
+  let off = 0;
+  out.set(header,  off); off += 4;
+  out.set(version, off); off += 1;
+  out.set(salt,    off); off += 32;
+  out.set(iv,      off); off += 12;
+  out.set(new Uint8Array(cipher), off);
+  return out;
+}
+
+async function startEncrypt() {
+  hideMessages();
+  encryptedBlob = null;
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('shareBtn').style.display = 'none';
+
+  const html    = document.getElementById('htmlInput').value.trim();
+  const name    = document.getElementById('docName').value.trim();
+  const expiry  = document.getElementById('expiryDate').value;
+  const cls     = document.getElementById('classInfo').value.trim();
+
+  if (!html) { showErr('⚠️ பாட HTML இல்லை! HTML code-ஐ paste செய்யுங்கள் அல்லது கோப்பை upload செய்யுங்கள்.'); return; }
+  if (!name) { showErr('⚠️ பாட பெயர் உள்ளிடுங்கள்!'); document.getElementById('docName').focus(); return; }
+
+  document.getElementById('encBtn').disabled = true;
+  showProg('🔐 தரவு தயாரிக்கப்படுகிறது / Preparing data...', 15);
+  await sleep(200);
+
+  // Build payload JSON
+  const meta = { name, created: new Date().toISOString(), teacher: currentTeacher?.user || '' };
+  if (expiry)  meta.expiry  = expiry;
+  if (cls)     meta.class   = cls;
+  const payload = JSON.stringify({ meta, html });
+
+  setProg(40); setProgLbl('🔑 குறியாக்கம் செய்கிறது / Encrypting with AES-256...');
+  await sleep(200);
+
+  // Resolve the correct file key based on current mode
+  let activeKey = currentFileKey;
+  const encMode = getEncKeyMode();
+  if (encMode === 'manual') {
+    const manualInp = document.getElementById('encManualPwInput');
+    activeKey = (manualInp && manualInp.value.trim()) ? manualInp.value.trim() : getEncManualKey();
+    if (!activeKey) {
+      document.getElementById('encBtn').disabled = false;
+      document.getElementById('progressWrap').style.display = 'none';
+      showErr('⚠️ MANUAL mode — கடவுச்சொல் உள்ளிடுங்கள்! Password field காலியாக உள்ளது.');
+      return;
+    }
+  } else {
+    activeKey = await deriveFileKey();
+  }
+
+  let encBytes;
+  try {
+    encBytes = await aesEncrypt(payload, activeKey);
+  } catch(e) {
+    document.getElementById('encBtn').disabled = false;
+    document.getElementById('progressWrap').style.display = 'none';
+    showErr('❌ குறியாக்கம் தோல்வியடைந்தது! / Encryption failed: ' + e.message);
+    return;
+  }
+
+  setProg(85); setProgLbl('📦 கோப்பு தயாரிக்கப்படுகிறது / Preparing file...');
+  await sleep(300);
+
+  encryptedBlob = new Blob([encBytes], { type:'application/octet-stream' });
+  encryptedName = name.replace(/[^a-zA-Z0-9_\-\u0B80-\u0BFF ]/g, '_').replace(/\s+/g,'_') + '.mkenc';
+
+  setProg(100); await sleep(200);
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('encBtn').disabled = false;
+
+  // Show success
+  const sizeKB = (encBytes.byteLength / 1024).toFixed(1);
+  document.getElementById('successMsg').innerHTML =
+    `✅ குறியாக்கம் வெற்றிகரமாக முடிந்தது! / Encryption successful!<br>
+     📄 கோப்பு: <strong>${encryptedName}</strong><br>
+     📦 அளவு: <strong>${sizeKB} KB</strong><br>
+     ${expiry ? '📅 காலக்கெடு: <strong>' + expiry + '</strong><br>' : ''}
+     `;
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('downloadBtn').style.display = 'block';
+  // Android app-ல் Share button காட்டுகிறோம்
+  if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isAndroid()) {
+    document.getElementById('shareBtn').style.display = 'block';
+  }
+
+  // Save to history
+  addHistory(name, encryptedName, sizeKB);
+}
+
+function downloadFile() {
+  if (!encryptedBlob) return;
+
+  // ── Android App-ல் இருந்தால் → AndroidBridge மூலம் Downloads-ல் சேமிக்கிறோம்
+  if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isAndroid()) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // e.target.result = "data:application/octet-stream;base64,XXXX..."
+      const base64 = e.target.result.split(',')[1];
+      const result = AndroidBridge.saveEncryptedFile(base64, encryptedName);
+      if (result === 'ok') {
+        // Toast already shown by Java; JS-ல் button feedback கொடுக்கிறோம்
+        const btn = document.getElementById('downloadBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ &nbsp; Downloads/MKEncryptor-ல் சேமிக்கப்பட்டது!';
+        btn.style.background = 'linear-gradient(135deg,#16a34a,#4ade80)';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 3000);
+      } else {
+        alert('சேமிப்பு தோல்வி: ' + result);
+      }
+    };
+    reader.readAsDataURL(encryptedBlob);
+    return;
+  }
+
+  // ── Browser / PWA fallback — பழைய anchor download method
+  const url = URL.createObjectURL(encryptedBlob);
+  const a   = document.createElement('a');
+  a.href = url; a.download = encryptedName;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ── Share function (Android only) — WhatsApp/Email/Drive-ல் .mkenc share
+function shareEncryptedFile() {
+  if (!encryptedBlob || typeof AndroidBridge === 'undefined') return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result.split(',')[1];
+    AndroidBridge.shareFile(base64, encryptedName);
+  };
+  reader.readAsDataURL(encryptedBlob);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════════════════════════
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+}
+function addHistory(name, filename, sizeKB) {
+  let list = getHistory();
+  list.unshift({ name, filename, sizeKB, time: Date.now() });
+  if (list.length > 20) list = list.slice(0, 20);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  renderHistory();
+}
+function clearHistory() {
+  if (!confirm('அனைத்து வரலாற்றையும் நீக்கவா? / Clear all history?')) return;
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistory();
+}
+function renderHistory() {
+  const list = getHistory();
+  const body = document.getElementById('historyBody');
+  if (!list.length) {
+    body.innerHTML = '<div class="history-empty">இன்னும் எந்த கோப்பும் குறியாக்கப்படவில்லை / No files encrypted yet</div>';
+    return;
+  }
+  body.innerHTML = `<ul class="history-list">${list.map((f,i) => `
+    <li class="history-item">
+      <span class="history-num">${i+1}</span>
+      <span class="history-icon">🔐</span>
+      <div class="history-info">
+        <div class="history-name" title="${f.filename}">${f.name}</div>
+        <div class="history-time">${f.filename} · ${f.sizeKB} KB · ${fmtRelativeTime(f.time)}</div>
+      </div>
+    </li>`).join('')}</ul>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════
+function showProg(l,p)  { document.getElementById('progressWrap').style.display='block'; document.getElementById('progressLabel').textContent=l; document.getElementById('progressFill').style.width=p+'%'; }
+function setProg(p)     { document.getElementById('progressFill').style.width=p+'%'; }
+function setProgLbl(t)  { document.getElementById('progressLabel').textContent=t; }
+function showErr(msg)   { const el=document.getElementById('errorMsg'); el.textContent=msg; el.style.display='block'; }
+function hideMessages() {
+  document.getElementById('errorMsg').style.display='none';
+  document.getElementById('successMsg').style.display='none';
+}
+function fmtSize(b)     { if(b<1024)return b+' B'; if(b<1048576)return(b/1024).toFixed(1)+' KB'; return(b/1048576).toFixed(1)+' MB'; }
+function fmtRelativeTime(ts) {
+  const diff = Math.floor((Date.now()-ts)/1000);
+  if(diff<60)   return diff+' வினாடி முன்பு';
+  if(diff<3600) return Math.floor(diff/60)+' நிமிடம் முன்பு';
+  if(diff<86400)return Math.floor(diff/3600)+' மணி நேரம் முன்பு';
+  return new Date(ts).toLocaleDateString('ta-IN');
+}
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+// ══════════════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  renderHistory();
+  const autoLogged = await attemptAutoLogin();
+  if (!autoLogged) {
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+});
+</script>
+</body>
+</html>
